@@ -17,9 +17,6 @@ module.exports = class Product {
         }
 
         save() {
-
-        
-
             fs.readFile(p, (err, fileContent) => {
                 let products = [];
                 
@@ -34,14 +31,34 @@ module.exports = class Product {
             });
         }
 
+        static clear(cb){
 
-        static fetchAll() {
             fs.readFile(p, (err, fileContent) => {
                 if(err){
-                    return [];
+                    cb([]);
                 }
 
-                return JSON.parse(fileContent);
+                let products = [];
+                while(products.length > 0) {
+                    products.pop();
+                }
+                
+                products = JSON.parse(fileContent);
+               fs.writeFile(p, JSON.stringify(products), (err) => {
+                    console.log(err);
+                });
+            });
+
+        }
+
+        static fetchAll(cb) {
+
+            fs.readFile(p, (err, fileContent) => {
+                if(err){
+                   cb([]);
+                }
+
+                cb(JSON.parse(fileContent));
             })
 
         }

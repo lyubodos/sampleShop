@@ -4,33 +4,33 @@ const Product = require("../models/products");
 
 
 getShop = (req, res, next) => {
-    const products =  Product.fetchAll();
+    Product.fetchAll(products => {
 
         res.render("shop", {
-        pageTitle: "Shop",
-        prods: products,
-        path: "/",
-        hasProducts: products.length > 0,
-        activeShop: true,
-        productCSS: true
+            pageTitle: "Shop",
+            prods: products,
+            path: "/",
+            hasProducts: products.length > 0,
+            activeShop: true,
+            productCSS: true
+        });
     });
 }
 
-
-
 getAddProduct = (req, res, next) => {
-    const products = Product.fetchAll();
+    Product.fetchAll(products => {
 
-    res.render("add-product", {
-        pageTitle: "Add Product",
-        path: '/admin/add-product', 
-        prods: products,
-        hasProducts: products.length > 0,
-        formsCSS: true, 
-        productCSS: true, 
-        activeAddProduct: true
-    });
-}  
+        res.render("add-product", {
+            pageTitle: "Add Product",
+            path: '/admin/add-product',
+            prods: products,
+            hasProducts: products.length > 0,
+            formsCSS: true,
+            productCSS: true,
+            activeAddProduct: true
+        });
+    })
+}
 
 getUsers = (req, res, next) => {
     res.render("users", {
@@ -49,13 +49,9 @@ postProducts = (req, res, next) => {
     res.redirect("/");
 };
 
-postClearProducts = (req, res, next) =>{
-    const products = Product.fetchAll();
+postClearProducts = (req, res, next) => {
 
-    while(products.length > 0){
-        products.pop();
-    }
-
+    Product.clear();
     res.redirect("/");
 };
 
@@ -76,9 +72,9 @@ clearUsers = (req, res, next) => {
 
 pageNotFound = (req, res, next) => {
     res.status(404)
-    .render("404", {
-        pageTitle: "Page Not Found",
-    });
+        .render("404", {
+            pageTitle: "Page Not Found",
+        });
 }
 
 module.exports = {
