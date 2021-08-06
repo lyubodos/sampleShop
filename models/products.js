@@ -38,7 +38,8 @@ module.exports = class Product {
                     cb([]);
                 }
 
-                let products = [];
+                let products;
+                
                 while(products.length > 0) {
                     products.pop();
                 }

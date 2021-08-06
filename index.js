@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -10,21 +11,27 @@ const adminRouter = require("./routes/admin");
 const homeRouter = require("./routes/home");
 const userRouter = require("./routes/users");
 
-const productsController = require("./controllers/products")
+const productsController = require("./controllers/products");
 
 
 const app = express();
 
+
 app.engine("hbs", expressHbs({
     layoutsDir: 'views/layouts/',
     defaultLayout: 'main-layout',
+    partialsDir: 'views/base',
     extname: "hbs"
 }));
+
+
+
+
 
 app.set("view engine", "hbs");
 app.set("views", "views");
 
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({ extended:false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(homeRouter);

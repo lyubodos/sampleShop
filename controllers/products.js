@@ -6,7 +6,7 @@ const Product = require("../models/products");
 getShop = (req, res, next) => {
     Product.fetchAll(products => {
 
-        res.render("shop", {
+        res.render("shop/shop", {
             pageTitle: "Shop",
             prods: products,
             path: "/",
@@ -20,7 +20,7 @@ getShop = (req, res, next) => {
 getAddProduct = (req, res, next) => {
     Product.fetchAll(products => {
 
-        res.render("add-product", {
+        res.render("admin/add-product", {
             pageTitle: "Add Product",
             path: '/admin/add-product',
             prods: products,
@@ -50,8 +50,15 @@ postProducts = (req, res, next) => {
 };
 
 postClearProducts = (req, res, next) => {
+  
+        // Product.clear(products => {
+        //     while(products > 0){
+        //         products.pop();
+        //     }
 
-    Product.clear();
+        //     res.redirect("/")
+        // });
+    console.log("Products have been cleared");
     res.redirect("/");
 };
 
@@ -65,9 +72,9 @@ clearUsers = (req, res, next) => {
     while (users.length > 0) {
         users.pop();
     }
-
     console.log(users);
     res.redirect("/users");
+
 }
 
 pageNotFound = (req, res, next) => {
