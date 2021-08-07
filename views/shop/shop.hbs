@@ -10,18 +10,13 @@
 </head>
 
 <body>
-    
+
     <main>
         <h1>My Products</h1>
         {{#if hasProducts}}
-        <p>List of all the products...</p>
-        <ul>
-            {{#each prods}}
-            <li>{{this.title}}</li>
-            {{/each}}
-        </ul>
+            {{> item}}
         {{else}}
-        <p>No products currenly in the cart.</p>
+            <h1>No Products Found!</h1>
         {{/if}}
     </main>
 </body>
