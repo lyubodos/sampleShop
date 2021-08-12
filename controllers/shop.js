@@ -1,6 +1,6 @@
 const users = [];
 
-const Product = require("../models/products");
+const Product = require("../models/product");
 
 
 getHome = (req, res, next) => {
@@ -28,34 +28,18 @@ getShop = (req, res, next) => {
 }
 
 
-getUsers = (req, res, next) => {
-    res.render("users", {
-        pageTitle: "Users",
-        path: "/users",
-        hasUsers: users.length > 0,
-        activeUsers: true,
-        productCSS: true,
-        users: users
+getDetails = (req, res, next) => {
+    const prodId = req.params.productId;
+
+    Product.findById(prodId, product => {
+        res.render("shop/item-details", {
+            product: product,
+            pageTitle: product.title,
+            path: "/products"
+        });
     });
 }
 
-
-
-getCart = (req, res, next) => {
-    Product.fetchAll(products => {
-
-    res.render("shop/cart", {
-        pageTitle: "Cart",
-        path: "/cart",
-        prods: products,
-        hasProducts: products.length > 0,
-        activeCart: true,
-        productCSS: true,
-    });
-
-
-    }); 
-}
 
 
 
@@ -90,10 +74,26 @@ getCheckout = (req, res, next) => {
 
 
     }); 
-}
+};
+
+
 
 
 /*Proto code
+
+getUsers = (req, res, next) => {
+    res.render("users", {
+        pageTitle: "Users",
+        path: "/users",
+        hasUsers: users.length > 0,
+        activeUsers: true,
+        productCSS: true,
+        users: users
+    });
+}
+
+
+
 postClearProducts = (req, res, next) => {
   
         // Product.clear(products => {
@@ -130,6 +130,7 @@ module.exports = {
     getAddProduct,
     getHome,
     getCart,
+    getDetails
 }
 
 

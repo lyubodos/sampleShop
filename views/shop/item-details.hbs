@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{pageTitle}}</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+
+
+    <div class="centered">
+        <article>
+
+            <h1>{{product.title}}</h1>
+            <hr>
+
+            <div>
+                <img src="{{product.imageUrl}}" alt="product-title">
+            </div>
+
+            <h2>Price: {{product.price}}$</h2>
+            <p>{{product.description}}</p>
+            <div class="item__actions">   
+                   
+                            <form action="/add-to-cart" method="POST">
+                            <button type="submit" class="btn">Add to Cart</button>
+                            </form>
+                            
+                        </div>
+        </article>
+    </div>
+
+</body>
+
+</html>
