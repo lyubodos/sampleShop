@@ -1,5 +1,6 @@
 const Product = require("../models/products");
 
+
 postProducts = (req, res, next) => {
 
     const title = req.body.title;
@@ -31,7 +32,7 @@ getAddProduct = (req, res, next) => {
 getAdminProducts = (req, res, next) =>{
     Product.fetchAll(products => {
 
-            res.render("shop/shop", {
+            res.render("admin/product-list", {
                 pageTitle: "Admin Products",
                 prods: products,
                 path: "/products",
