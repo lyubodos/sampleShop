@@ -12,11 +12,10 @@ const envValues = require("./envVal");
 //Piping routers from their dirs
 const adminRouter = require("./routes/admin");
 const homeRouter = require("./routes/home");
-const userRouter = require("./routes/users");
 
 
 //Piping controller for the products
-const productsController = require("./controllers/products");
+const errorController = require("./controllers/error");
 
 
 const app = express();
@@ -40,12 +39,12 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended:false }));
 app.use(express.static(path.join(__dirname, "public")));
 
+
 //Calling diferent routers
 app.use(homeRouter);
 app.use("/admin", adminRouter);
-app.use(userRouter);
 
-app.use(productsController.pageNotFound);
+app.use(errorController.error404);
 
 
 //Core server deployment

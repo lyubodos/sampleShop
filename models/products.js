@@ -12,10 +12,14 @@ const p = path.join(rootDir,
 
 module.exports = class Product {
 
-        constructor(title){
+        constructor(title, imageUrl, description, price){
             this.title = title;
+            this.imageUrl = imageUrl;
+            this.description = description;
+            this.price = price;
         }
 
+        
         save() {
             fs.readFile(p, (err, fileContent) => {
                 let products = [];

@@ -3,7 +3,17 @@ const users = [];
 const Product = require("../models/products");
 
 
+getHome = (req, res, next) => {
+        res.render("shop/home", {
+        pageTitle: "Home",
+        path: "/",
+        activeHome: true,
+        productCSS: true
+    });
+}
+
 getShop = (req, res, next) => {
+
     Product.fetchAll(products => {
 
         res.render("shop/shop", {
@@ -11,26 +21,12 @@ getShop = (req, res, next) => {
             prods: products,
             path: "/",
             hasProducts: products.length > 0,
-            activeShop: true,
+            activeProducts: true,
             productCSS: true
         });
     });
 }
 
-getAddProduct = (req, res, next) => {
-    Product.fetchAll(products => {
-
-        res.render("admin/add-product", {
-            pageTitle: "Add Product",
-            path: '/admin/add-product',
-            prods: products,
-            hasProducts: products.length > 0,
-            formsCSS: true,
-            productCSS: true,
-            activeAddProduct: true
-        });
-    })
-}
 
 getUsers = (req, res, next) => {
     res.render("users", {
@@ -40,15 +36,64 @@ getUsers = (req, res, next) => {
         activeUsers: true,
         productCSS: true,
         users: users
-    })
+    });
 }
 
-postProducts = (req, res, next) => {
-    const product = new Product(req.body.title);
-    product.save();
-    res.redirect("/");
-};
 
+
+getCart = (req, res, next) => {
+    Product.fetchAll(products => {
+
+    res.render("shop/cart", {
+        pageTitle: "Cart",
+        path: "/cart",
+        prods: products,
+        hasProducts: products.length > 0,
+        activeCart: true,
+        productCSS: true,
+    });
+
+
+    }); 
+}
+
+
+
+
+getCart = (req, res, next) => {
+    Product.fetchAll(products => {
+
+    res.render("shop/cart", {
+        pageTitle: "Cart",
+        path: "/cart",
+        prods: products,
+        hasProducts: products.length > 0,
+        activeCart: true,
+        productCSS: true,
+    });
+
+
+    }); 
+}
+
+getCheckout = (req, res, next) => {
+    Product.fetchAll(products => {
+
+    res.render("shop/checkout", {
+        pageTitle: "Checkout",
+        path: "/checkout",
+        prods: products,
+        hasProducts: products.length > 0,
+        activeCheckout: true,
+        productCSS: true,
+    });
+
+
+    }); 
+}
+
+
+/*Proto code
 postClearProducts = (req, res, next) => {
   
         // Product.clear(products => {
@@ -76,23 +121,15 @@ clearUsers = (req, res, next) => {
     res.redirect("/users");
 
 }
+*/
 
-pageNotFound = (req, res, next) => {
-    res.status(404)
-        .render("404", {
-            pageTitle: "Page Not Found",
-        });
-}
+
 
 module.exports = {
-    clearUsers,
     getShop,
     getAddProduct,
-    postProducts,
-    postClearProducts,
-    getUsers,
-    postUsers,
-    pageNotFound
+    getHome,
+    getCart,
 }
 
 
