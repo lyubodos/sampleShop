@@ -25,7 +25,7 @@ const app = express();
 app.engine("hbs", expressHbs({
     layoutsDir: 'views/layouts/',
     defaultLayout: 'main-layout',
-    partialsDir: ['views/base', 'views/shop'],
+    partialsDir: ['views/base', "views/shop"],
     extname: "hbs"
 }));
 

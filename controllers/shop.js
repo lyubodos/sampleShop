@@ -1,6 +1,7 @@
 const users = [];
 
 const Product = require("../models/product");
+const Cart = require("../models/cart");
 
 
 getHome = (req, res, next) => {
@@ -60,6 +61,23 @@ getCart = (req, res, next) => {
     }); 
 }
 
+
+postCart = (req, res, next) =>{
+    const prodId = req.body.productId;
+
+    console.log(prodId);
+
+    Product.findById(prodId, product => {
+        console.log(product);
+        Cart.addProduct(prodId, product.price);
+    });
+
+    res.redirect('/cart');
+}
+
+ 
+
+
 getCheckout = (req, res, next) => {
     Product.fetchAll(products => {
 
@@ -73,10 +91,8 @@ getCheckout = (req, res, next) => {
     });
 
 
-    }); 
+    }); 1
 };
-
-
 
 
 /*Proto code
@@ -130,7 +146,8 @@ module.exports = {
     getAddProduct,
     getHome,
     getCart,
-    getDetails
+    getDetails,
+    postCart
 }
 
 
