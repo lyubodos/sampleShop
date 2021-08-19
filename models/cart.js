@@ -16,7 +16,6 @@ module.exports = class Cart {
 
     }
 
-
     static addProduct(id, productPrice){
         let cart = {
             products: [],
