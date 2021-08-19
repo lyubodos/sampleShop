@@ -18,6 +18,8 @@ const homeRouter = require("./routes/home");
 const errorController = require("./controllers/error");
 
 
+const mongoConnect = require("./util/database").mongoConnect;
+
 const app = express();
 
 
@@ -47,7 +49,15 @@ app.use("/admin", adminRouter);
 app.use(errorController.error404);
 
 
-//Core server deployment
-app.listen(envValues.port, () => {
-    console.log(`Server is runing on port ${envValues.port}.`);
+
+//Core server deployment (MongoDB)
+mongoConnect(client => {
+    console.log(client);
+    app.listen(envValues.port, () => {
+        console.log(`Server is runing on port ${envValues.port}.`);
+    });
 });
+
+
+
+

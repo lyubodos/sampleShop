@@ -1,26 +1,10 @@
 const Product = require("../models/product");
 
 
-postProducts = (req, res, next) => {
-
-    const title = req.body.title;
-    const imageUrl = req.body.imageUrl;
-    const price = req.body.price;
-    const description = req.body.description;
-
-    const product = new Product(null, title, imageUrl, description, price);
-
-    product.save();
-    res.redirect("/");
-};
-
-
 getAddProduct = (req, res, next) => {
     const editMode = req.query.edit;
 
-
-    Product.fetchAll(products => {
-
+    let products = [];
         res.render("admin/edit-product", {
             pageTitle: "Add Product",
             path: '/admin/add-product',
@@ -31,8 +15,29 @@ getAddProduct = (req, res, next) => {
             productCSS: true,
             activeAddProduct: true
         });
-    })
+   
 }
+
+postProducts = (req, res, next) => {
+
+    const title = req.body.title;
+    const imageUrl = req.body.imageUrl;
+    const price = req.body.price;
+    const description = req.body.description;
+
+    
+    const product = new Product(title, imageUrl, description, price);
+
+    product.save()
+    .then(result => {
+        console.log("Product created");
+        res.redirect("/admin/products");
+    })
+    .catch(err =>{
+        console.log(err);
+    });
+
+};
 
 getEditProduct = (req, res, next) => {
     const editMode = req.query.edit;
@@ -43,8 +48,8 @@ getEditProduct = (req, res, next) => {
 
     const prodId = req.params.productId;
 
-    Product.findById(prodId, product => {
-
+    Product.findById(prodId)
+    .then(product => {
         if(!product){
             return res.redirect("/");
         }
@@ -59,7 +64,9 @@ getEditProduct = (req, res, next) => {
         });
     });
 
- 
+     
+
+        
 }
 
 postEditProduct = (req, res, next) => {
@@ -76,18 +83,20 @@ postEditProduct = (req, res, next) => {
         res.redirect("/admin/products");
     }
 
-getAdminProducts = (req, res, next) => {
-    Product.fetchAll(products => {
-
-        res.render("admin/product-list", {
-            pageTitle: "Admin Products",
-            prods: products,
-            path: "/products",
-            hasProducts: products.length > 0,
-            activeAdmProducts: true,
-            productCSS: true
-        });
-    });
+    
+getAdminProducts =  (req, res, next) =>  {
+        Product.fetchAll()
+        .then(products => {
+            res.render("admin/product-list", {
+                pageTitle: "Admin Products",
+                prods: products,
+                path: "/products",
+                hasProducts: products.length > 0,
+                activeAdmProducts: true,
+                productCSS: true
+            });
+        })
+  
 }
 
 

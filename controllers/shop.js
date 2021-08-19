@@ -15,33 +15,34 @@ getHome = (req, res, next) => {
 
 getShop = (req, res, next) => {
 
-    Product.fetchAll(products => {
-
-        res.render("shop/shop", {
-            pageTitle: "Shop",
-            prods: products,
-            path: "/",
-            hasProducts: products.length > 0,
-            activeProducts: true,
-            productCSS: true
-        });
+   Product.fetchAll()
+   .then(products => {
+    res.render("shop/shop", {
+        pageTitle: "Shop",
+        prods: products,
+        path: "/",
+        hasProducts: products.length > 0,
+        activeProducts: true,
+        productCSS: true
     });
+   });
 }
 
 
 getDetails = (req, res, next) => {
     const prodId = req.params.productId;
 
-    Product.findById(prodId, product => {
+    Product.findById(prodId)
+    .then(product => {
+        console.log(product);
         res.render("shop/item-details", {
             product: product,
-            pageTitle: product.title,
+            // pageTitle: product.title,
             path: "/products"
         });
-    });
+    })
+    .catch(err => console.log(err));
 }
-
-
 
 
 
@@ -138,7 +139,6 @@ clearUsers = (req, res, next) => {
 
 }
 */
-
 
 
 module.exports = {
