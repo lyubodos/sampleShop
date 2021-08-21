@@ -62,6 +62,21 @@ getCart = (req, res, next) => {
 }
  
 
+postCart = (req, res, next) => {
+
+    const prodId = req.body.productId;
+
+    Product.findById(prodId)
+        .then(product => {
+            return req.user.addToCart(product);
+        })
+        .then(result => {
+            res.redirect('/cart');
+        })
+        .catch(err => console.log(err))
+
+}
+
 
 
 deleteProdCart = (req, res, next) => {
@@ -82,7 +97,8 @@ module.exports = {
     getHome,
     getCart,
     getDetails,
-    deleteProdCart
+    deleteProdCart,
+    postCart
 }
 
 
