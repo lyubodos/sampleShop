@@ -1,11 +1,9 @@
-const users = [];
-
 const Product = require("../models/product");
 const Cart = require("../models/cart");
 
 
 getHome = (req, res, next) => {
-        res.render("shop/home", {
+    res.render("shop/home", {
         pageTitle: "Home",
         path: "/",
         activeHome: true,
@@ -15,17 +13,17 @@ getHome = (req, res, next) => {
 
 getShop = (req, res, next) => {
 
-   Product.fetchAll()
-   .then(products => {
-    res.render("shop/shop", {
-        pageTitle: "Shop",
-        prods: products,
-        path: "/",
-        hasProducts: products.length > 0,
-        activeProducts: true,
-        productCSS: true
-    });
-   });
+    Product.fetchAll()
+        .then(products => {
+            res.render("shop/shop", {
+                pageTitle: "Shop",
+                prods: products,
+                path: "/",
+                hasProducts: products.length > 0,
+                activeProducts: true,
+                productCSS: true
+            });
+        });
 }
 
 
@@ -33,112 +31,49 @@ getDetails = (req, res, next) => {
     const prodId = req.params.productId;
 
     Product.findById(prodId)
-    .then(product => {
-        console.log(product);
-        res.render("shop/item-details", {
-            product: product,
-            // pageTitle: product.title,
-            path: "/products"
-        });
-    })
-    .catch(err => console.log(err));
+        .then(product => {
+            console.log(product);
+            res.render("shop/item-details", {
+                product: product,
+                // pageTitle: product.title,
+                path: "/products"
+            });
+        })
+        .catch(err => console.log(err));
 }
 
 
 
 getCart = (req, res, next) => {
-    Product.fetchAll(products => {
 
-    res.render("shop/cart", {
-        pageTitle: "Cart",
-        path: "/cart",
-        prods: products,
-        hasProducts: products.length > 0,
-        activeCart: true,
-        productCSS: true,
-    });
-
-
-    }); 
+    req.user
+        .getCart()
+        .then(products => {
+            res.render("shop/cart", {
+                pageTitle: "Cart",
+                path: "/cart",
+                prods: products,
+                hasProducts: products.length > 0,
+                activeCart: true,
+                productCSS: true,
+            });
+        })
+        .catch(err => console.log(err));
 }
-
-
-postCart = (req, res, next) =>{
-    const prodId = req.body.productId;
-
-    console.log(prodId);
-
-    Product.findById(prodId, product => {
-        console.log(product);
-        Cart.addProduct(prodId, product.price);
-    });
-
-    res.redirect('/cart');
-}
-
  
 
 
-getCheckout = (req, res, next) => {
-    Product.fetchAll(products => {
 
-    res.render("shop/checkout", {
-        pageTitle: "Checkout",
-        path: "/checkout",
-        prods: products,
-        hasProducts: products.length > 0,
-        activeCheckout: true,
-        productCSS: true,
-    });
+deleteProdCart = (req, res, next) => {
+    const prodId = req.body.productId;
 
-
-    }); 1
-};
-
-
-/*Proto code
-
-getUsers = (req, res, next) => {
-    res.render("users", {
-        pageTitle: "Users",
-        path: "/users",
-        hasUsers: users.length > 0,
-        activeUsers: true,
-        productCSS: true,
-        users: users
-    });
+    req.user
+    .deleteItemFromCart(prodId)
+        .then(result => {
+            res.redirect('/cart');
+        })
+        .catch(err => console.log(err))
 }
-
-
-
-postClearProducts = (req, res, next) => {
-  
-        // Product.clear(products => {
-        //     while(products > 0){
-        //         products.pop();
-        //     }
-
-        //     res.redirect("/")
-        // });
-    console.log("Products have been cleared");
-    res.redirect("/");
-};
-
-postUsers = (req, res, next) => {
-    users.push(req.body.userName)
-    console.log(users);
-    res.redirect("/users");
-}
-
-clearUsers = (req, res, next) => {
-    while (users.length > 0) {
-        users.pop();
-    }
-    console.log(users);
-    res.redirect("/users");
-
-}
-*/
 
 
 module.exports = {
@@ -147,7 +82,7 @@ module.exports = {
     getHome,
     getCart,
     getDetails,
-    postCart
+    deleteProdCart
 }
 
 

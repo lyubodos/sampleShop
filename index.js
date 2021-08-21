@@ -18,6 +18,9 @@ const homeRouter = require("./routes/home");
 const errorController = require("./controllers/error");
 
 
+const User = require("./models/user");
+
+
 const mongoConnect = require("./util/database").mongoConnect;
 
 const app = express();
@@ -38,14 +41,24 @@ app.set("views", "views");
 
 
 //Adjusting body parsing and delivery of static css files for every render
-app.use(bodyParser.urlencoded({ extended:false }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+
+
+//Seting current user
+app.use((req, res, next) => {
+    User.findById("6120c44b14a71952692c4054")
+        .then(user => {
+            req.user = new User(user.name, user.email, user.cart, user._id);
+            next();
+        })
+        .catch(err => console.log(err))
+});
 
 
 //Calling diferent routers
 app.use(homeRouter);
 app.use("/admin", adminRouter);
-
 app.use(errorController.error404);
 
 
@@ -53,6 +66,8 @@ app.use(errorController.error404);
 //Core server deployment (MongoDB)
 mongoConnect(client => {
     console.log(client);
+
+
     app.listen(envValues.port, () => {
         console.log(`Server is runing on port ${envValues.port}.`);
     });

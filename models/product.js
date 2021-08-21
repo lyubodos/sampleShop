@@ -7,12 +7,13 @@ const Cart = require("./cart");
 
 class Product {
 
-    constructor(title, imageUrl,  description, price, id){
+    constructor(title, imageUrl,  description, price, id, userId){
         this.title = title;
         this.imageUrl = imageUrl;
         this.price = price;
         this.description = description;
-        this._id = id ? new mongoDb.ObjectId(id) : null
+        this._id = id ? new mongoDb.ObjectId(id) : null;
+        this.userId = userId;
     }
 
     save(){
@@ -29,7 +30,6 @@ class Product {
           .collection('products')
           .insertOne(this)
         }
-
 
         return dbOp
         .then(result => {
