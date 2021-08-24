@@ -1,9 +1,7 @@
  <link rel="stylesheet" href="/css/orders.css">
 
 <main>
-
     {{#if hasOrders}}
-
     <ul class="orders">
         {{#each orders}}
         <li class="orders__item">
@@ -12,6 +10,7 @@
                 {{#each this.items}}
                 <li class="orders__products-item">
                     <h3>Title: {{this.title}}</h3>
+                    <h4>Price for one: {{this.price}}$</h4>
                     <p>Qunatity: {{this.quantity}}</p>
                 </li>
                 {{/each}}
@@ -19,9 +18,7 @@
         </li>
         {{/each}}
     </ul>
-
     {{else}}
     <h1>No current orders!</h1>
     {{/if}}
-
 </main>

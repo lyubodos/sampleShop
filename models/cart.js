@@ -1,18 +1,18 @@
 
-module.exports = class Cart {
+// module.exports = class Cart {
 
-    constructor(){
+//     constructor(){
 
-    }
+//     }
 
-    static addProduct(id, productPrice){
+//     static addProduct(id, productPrice){
     
-    }
+//     }
 
 
-    static deleteProduct(id, productPrice) {
+//     static deleteProduct(id, productPrice) {
 
-      }
+//       }
 
 
-}
+// }

@@ -13,8 +13,10 @@ getHome = (req, res, next) => {
 
 getShop = (req, res, next) => {
 
-    Product.fetchAll()
+    Product.find()
+    .lean()
         .then(products => {
+            console.log(products)
             res.render("shop/shop", {
                 pageTitle: "Shop",
                 prods: products,
@@ -31,6 +33,7 @@ getDetails = (req, res, next) => {
     const prodId = req.params.productId;
 
     Product.findById(prodId)
+        .lean()
         .then(product => {
             console.log(product);
             res.render("shop/item-details", {
@@ -94,6 +97,7 @@ getOrders = (req, res, next) => {
       .catch(err => console.log(err));
 };
 
+
 postOrder = (req, res, next) => {
     
     req.user
@@ -103,6 +107,7 @@ postOrder = (req, res, next) => {
     })
     .catch(err => console.log(err))
 }
+
 
 deleteProdCart = (req, res, next) => {
     const prodId = req.body.productId;

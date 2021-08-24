@@ -17,11 +17,11 @@ const homeRouter = require("./routes/home");
 //Piping controller for the products
 const errorController = require("./controllers/error");
 
+const mongoose = require("mongoose");
+
 
 const User = require("./models/user");
 
-
-const mongoConnect = require("./util/database").mongoConnect;
 
 const app = express();
 
@@ -47,10 +47,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //Seting current user
 app.use((req, res, next) => {
-    User.findById("6120c44b14a71952692c4054")
+    User.findById("6124ff294543b7cf410d2e9d")
         .then(user => {
-            req.user = new User(user.name, user.email, user.cart, user._id);
-            console.log(user.cart);
+            req.user = user;
             next();
         })
         .catch(err => console.log(err))
@@ -65,15 +64,23 @@ app.use(errorController.error404);
 
 
 //Core server deployment (MongoDB)
-mongoConnect(client => {
-    console.log(client);
+mongoose
+    .connect('mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/shop?retryWrites=true&w=majority')
+    .then(result =>{
+    User.findOne()
+    .then(user => {
+        if(!user){const user = new User({
+            name: "Lyubomir",
+            email: 'lyubomir.vas@test.cc',
+            cart: {
+                items: []
+            }
+        });
 
-
-    app.listen(envValues.port, () => {
-        console.log(`Server is runing on port ${envValues.port}.`);
+        user.save();
+        }
     });
-});
+    app.listen(3000);
+    console.log("Connected!");
 
-
-
-
+}).catch(err => console.log(err));
