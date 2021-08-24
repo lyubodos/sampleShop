@@ -29,7 +29,6 @@ class User {
         let newQty = 1;
         const updatedCartItmes = [...this.cart.items];
 
-        console.log(cartProductIndex);
 
         if (cartProductIndex >= 0) {
             newQty = this.cart.items[cartProductIndex].quantity + 1;
@@ -50,6 +49,44 @@ class User {
                 { _id: new ObjectId(this._id) },
                 { $set: { cart: updatedCart } });
     }
+
+    getOrders() {
+        const db = getDb();
+
+        return db
+            .collection('orders')
+            .find({ 'user._id': new ObjectId(this._id) })
+            .toArray();
+    }
+
+
+
+    addOrder() {
+        const db = getDb();
+        return this.getCart()
+            .then(products => {
+                const order = {
+                    items: products,
+                    user: {
+                        _id: new ObjectId(this._id),
+                        userName: this.userName
+                    }
+                };
+                return db.collection('orders').insertOne(order);
+            })
+            .then(result => {
+                this.cart = { items: [] };
+
+                return db
+                    .collection('users')
+                    .updateOne(
+                        { _id: new ObjectId(this._id) },
+                        { $set: { cart: { items: [] } } }
+                    );
+            });
+    }
+
+
 
     getCart() {
         const db = getDb();
@@ -73,7 +110,10 @@ class User {
             });
     }
 
-    deleteItemFromCart(productId){
+    
+
+
+    deleteItemFromCart(productId) {
         const updatedCartItems = this.cart.items.filter(i => {
             return i.productId.toString() !== productId.toString();
         });
@@ -83,9 +123,9 @@ class User {
         return db.collection('users')
             .updateOne(
                 { _id: new ObjectId(this._id) },
-                { $set: { cart: { items: updatedCartItems } }}
+                { $set: { cart: { items: updatedCartItems } } }
             );
-    
+
     }
 
     static findById(userId) {
@@ -101,7 +141,5 @@ class User {
     }
 
 }
-
-
 
 module.exports = User;

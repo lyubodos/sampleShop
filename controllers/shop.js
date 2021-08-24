@@ -44,6 +44,7 @@ getDetails = (req, res, next) => {
 
 
 
+
 getCart = (req, res, next) => {
 
     req.user
@@ -78,6 +79,30 @@ postCart = (req, res, next) => {
 }
 
 
+getOrders = (req, res, next) => {
+    req.user
+      .getOrders()
+      .then(orders => {
+        res.render('shop/orders', {
+          path: '/orders',
+          pageTitle: 'Your Orders',
+          orders: orders,
+          hasOrders: orders.length > 0,
+          acriveOrders: true
+        });
+      })
+      .catch(err => console.log(err));
+};
+
+postOrder = (req, res, next) => {
+    
+    req.user
+    .addOrder()
+    .then(result => {
+        res.redirect("/orders");
+    })
+    .catch(err => console.log(err))
+}
 
 deleteProdCart = (req, res, next) => {
     const prodId = req.body.productId;
@@ -98,7 +123,9 @@ module.exports = {
     getCart,
     getDetails,
     deleteProdCart,
-    postCart
+    postCart,
+    getOrders,
+    postOrder
 }
 
 
