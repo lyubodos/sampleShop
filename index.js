@@ -12,6 +12,7 @@ const envValues = require("./envVal");
 //Piping routers from their dirs
 const adminRouter = require("./routes/admin");
 const homeRouter = require("./routes/home");
+const authRouter = require("./routes/auth");
 
 
 //Piping controller for the products
@@ -59,13 +60,14 @@ app.use((req, res, next) => {
 //Calling diferent routers
 app.use(homeRouter);
 app.use("/admin", adminRouter);
+app.use(authRouter);
 app.use(errorController.error404);
 
 
 
+
 //Core server deployment (MongoDB)
-mongoose
-    .connect('mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/shop?retryWrites=true&w=majority',{useNewUrlParser: true} )
+mongoose.connect('mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/shop?retryWrites=true&w=majority')
     .then(result =>{
         
     User.findOne()

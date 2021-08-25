@@ -4,8 +4,6 @@ const Product = require("../models/product");
 const ObjectId = mongodb.ObjectId;
 
 
-
-
 getAddProduct = (req, res, next) => {
     const editMode = req.query.edit;
 

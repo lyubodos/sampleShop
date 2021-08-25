@@ -1,6 +1,4 @@
 const Product = require("../models/product");
-const Cart = require("../models/cart");
-
 const Order = require("../models/order");
 
 getHome = (req, res, next) => {
@@ -25,6 +23,7 @@ getShop = (req, res, next) => {
                 prods: products,
                 path: "/",
                 hasProducts: products.length > 0,
+                isLoggedIn: req.isLoggedIn,
                 activeProducts: true,
                 productCSS: true
             });
@@ -107,18 +106,16 @@ postCart = (req, res, next) => {
 
 //Order controllers
 getOrders = (req, res, next) => {
-    req.user
-      .getOrders()
-      .then(orders => {
+    Order.find({"user.userId": req.user._id})
+    .then(orders =>{
         res.render('shop/orders', {
-          path: '/orders',
-          pageTitle: 'Your Orders',
-          orders: orders,
-          hasOrders: orders.length > 0,
-          acriveOrders: true
-        });
-      })
-      .catch(err => console.log(err));
+            path: '/orders',
+            pageTitle: 'Your Orders',
+            orders: orders,
+            hasOrders: orders.length > 0,
+            acriveOrders: true
+          });
+    }).catch(err => console.log(err));
 };
 
 postOrder = (req, res, next) => {
@@ -128,24 +125,26 @@ postOrder = (req, res, next) => {
     .execPopulate()
     .then(user => {
         let products = user.cart.items.map(i => {
-            return {quantity: i.quantity, product: i.productId}
+            return { quantity: i.quantity, product: {...i.productId._doc} };
         });
 
         const order = new Order({
+            products: products,
+
             user: {
                 name: req.user.name,
                 userId: req.user
             },
-            products: products
+            
         });
+
         return order.save();
     })
     .then(result => {
-        // res.redirect("/orders");
+        res.redirect("/orders");
     })
     .catch(err => console.log(err))
 };
-
 
 
 module.exports = {
