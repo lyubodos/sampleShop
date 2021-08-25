@@ -113,7 +113,6 @@ getAdminProducts =  (req, res, next) =>  {
         Product.find()
         .lean()
         .then(products => {
-            console.log(products);
             res.render("admin/product-list", {
                 pageTitle: "Admin Products",
                 prods: products,

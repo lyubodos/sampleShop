@@ -65,8 +65,9 @@ app.use(errorController.error404);
 
 //Core server deployment (MongoDB)
 mongoose
-    .connect('mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/shop?retryWrites=true&w=majority')
+    .connect('mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/shop?retryWrites=true&w=majority',{useNewUrlParser: true} )
     .then(result =>{
+        
     User.findOne()
     .then(user => {
         if(!user){const user = new User({
