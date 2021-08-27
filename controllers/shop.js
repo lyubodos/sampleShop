@@ -5,6 +5,7 @@ getHome = (req, res, next) => {
     res.render("shop/home", {
         pageTitle: "Home",
         path: "/",
+        isLoggedIn: req.isLoggedIn,
         activeHome: true,
         productCSS: true
     });
@@ -17,7 +18,6 @@ getShop = (req, res, next) => {
     Product.find()
     .lean()
         .then(products => {
-            console.log(products)
             res.render("shop/shop", {
                 pageTitle: "Shop",
                 prods: products,
@@ -42,7 +42,8 @@ getDetails = (req, res, next) => {
             res.render("shop/item-details", {
                 product: product,
                 // pageTitle: product.title,
-                path: "/products"
+                path: "/products",
+                isLoggedIn: req.isLoggedIn,
             });
         })
         .catch(err => console.log(err));
@@ -79,6 +80,7 @@ getCart = (req, res, next) => {
                 path: "/cart",
                 prods: products,
                 hasProducts: products.length > 0,
+                isLoggedIn: req.isLoggedIn,
                 activeCart: true,
                 productCSS: true,
             });

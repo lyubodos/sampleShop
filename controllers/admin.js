@@ -15,6 +15,7 @@ getAddProduct = (req, res, next) => {
             prods: products,
             hasProducts: products.length > 0,
             editing: editMode,
+            isLoggedIn: req.isLoggedIn,
             formsCSS: true,
             productCSS: true,
             activeAddProduct: true
@@ -72,6 +73,7 @@ getEditProduct = (req, res, next) => {
             editing: editMode,
             formsCSS: true,
             productCSS: true,
+            isLoggedIn: req.isLoggedIn,
             product: product
         });
     });
@@ -116,10 +118,11 @@ getAdminProducts =  (req, res, next) =>  {
                 prods: products,
                 path: "/products",
                 hasProducts: products.length > 0,
+                isLoggedIn: req.isLoggedIn,
                 activeAdmProducts: true,
                 productCSS: true
             });
-        })
+        });
   
 }
 
