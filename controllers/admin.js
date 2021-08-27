@@ -4,6 +4,24 @@ const Product = require("../models/product");
 const ObjectId = mongodb.ObjectId;
 
 
+getAdminProducts =  (req, res, next) =>  {
+    Product.find()
+    .lean()
+    .then(products => {
+        res.render("admin/product-list", {
+            pageTitle: "Admin Products",
+            prods: products,
+            path: "/products",
+            isAuth: req.session.isLoggedIn,
+            hasProducts: products.length > 0,
+            activeAdmProducts: true,
+            productCSS: true
+        });
+    })
+
+};
+
+
 getAddProduct = (req, res, next) => {
     const editMode = req.query.edit;
 
@@ -14,12 +32,13 @@ getAddProduct = (req, res, next) => {
             path: '/admin/add-product',
             prods: products,
             hasProducts: products.length > 0,
+            isAuth: req.session.isLoggedIn,
             editing: editMode,
             formsCSS: true,
             productCSS: true,
             activeAddProduct: true
         });
-}
+};
 
 
 postProducts = (req, res, next) => {
@@ -69,6 +88,7 @@ getEditProduct = (req, res, next) => {
         res.render("admin/edit-product", {
             pageTitle: "Edit Product",
             path: '/admin/edit-product',
+            isAuth: req.session.isLoggedIn,
             editing: editMode,
             formsCSS: true,
             productCSS: true,
@@ -76,10 +96,7 @@ getEditProduct = (req, res, next) => {
         });
     });
 
-     
-
-        
-}
+};
 
 postEditProduct = (req, res, next) => {
         const prodId = req.body.productId;
@@ -104,24 +121,9 @@ postEditProduct = (req, res, next) => {
             console.log(`UPDATED!!}`);
             res.redirect("/admin/products")
         })
-    }
+};
 
     
-getAdminProducts =  (req, res, next) =>  {
-        Product.find()
-        .lean()
-        .then(products => {
-            res.render("admin/product-list", {
-                pageTitle: "Admin Products",
-                prods: products,
-                path: "/products",
-                hasProducts: products.length > 0,
-                activeAdmProducts: true,
-                productCSS: true
-            });
-        })
-  
-}
 
 
 postDeleteProd = (req, res, next) => {
@@ -133,7 +135,7 @@ postDeleteProd = (req, res, next) => {
         res.redirect("/admin/products");
     })
     .catch(err => console.log(err))
-}
+};
 
 
 module.exports = {
@@ -143,4 +145,4 @@ module.exports = {
     getEditProduct,
     postEditProduct,
     postDeleteProd
-}
+};

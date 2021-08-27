@@ -6,6 +6,8 @@ const fs = require("fs");
 const express = require("express");
 const bodyParser = require("body-parser");
 const expressHbs = require("express-handlebars");
+const session = require("express-session");
+const mongoDBStore = require("connect-mongodb-session")(session);
 
 const envValues = require("./envVal");
 
@@ -24,7 +26,16 @@ const mongoose = require("mongoose");
 const User = require("./models/user");
 
 
+//Creating a ref for the database path which can be used more than once
+const MONGODB_URI ='mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/shop';
+
+
 const app = express();
+
+const store = new mongoDBStore({
+   uri: MONGODB_URI,
+   collection: 'sessions',
+});
 
 
 //Calibrating view-engine's(Handlebars) extension type and directory path
@@ -46,15 +57,29 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 
+//Creating a session aprehending the express-session with a middleware
+app.use(
+
+session({
+    secret: 'my secret',
+    resave: false,
+    saveUnitialized: false,
+    store: store
+}))
+
+
 //Seting current user
 app.use((req, res, next) => {
-    User.findById("6124ff294543b7cf410d2e9d")
-        .then(user => {
-            req.user = user;
-            next();
-        })
-        .catch(err => console.log(err))
-});
+    if (!req.session.user) {
+      return next();
+    }
+    User.findById(req.session.user._id)
+      .then(user => {
+        req.user = user;
+        next();
+      })
+      .catch(err => console.log(err));
+  });
 
 
 //Calling diferent routers
@@ -67,7 +92,7 @@ app.use(errorController.error404);
 
 
 //Core server deployment (MongoDB)
-mongoose.connect('mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/shop?retryWrites=true&w=majority')
+mongoose.connect(MONGODB_URI)
     .then(result =>{
         
     User.findOne()
@@ -83,7 +108,7 @@ mongoose.connect('mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/s
         user.save();
         }
     });
-    app.listen(3000);
+    app.listen(envValues.port);
     console.log("Connected!");
 
 }).catch(err => console.log(err));

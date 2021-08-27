@@ -4,20 +4,33 @@
             <li class="main-header__item"><a class="{{#if activeHome}}active{{/if}}" href="/">Home</a></li>
             <li class="main-header__item"><a class="{{#if activeProducts}}active{{/if}}" href="/products">Products</a>
             </li>
+            {{#if isAuth}}
             <li class="main-header__item"><a class="{{#if activeCart}}active{{/if}}" href="/cart">Cart</a></li>
             <li class="main-header__item"><a class="{{#if acriveOrders}}active{{/if}}" href="/orders">Orders</a>
             </li>
-            {{#if isLoggedIn}}
+
             <li class="main-header__item"><a class="{{#if activeAddProduct}}active{{/if}}" href="/admin/add-product">Add
                     Product</a></li>
             <li class="main-header__item"><a class="{{#if activeAdmProducts}}active{{/if}}" href="/admin/products">Admin
                     Products</a></li>
             {{/if}}
         </ul>
+
         <ul class="main-header__item-list">
-            <li class="main-header__item login">
+            {{#if isAuth}}
+
+            <li class="main-header__item ">
+                <form action="/logout" method="POST">
+                    <button class="btn" type="submit">Logout</button>
+                </form>
+            </li>
+            {{else}}
+            <li class="main-header__item ">
                 <a class="{{#if activeLogin}}active{{/if}}" href="/login">Login</a>
             </li>
+            {{/if}}
+
         </ul>
+
     </nav>
 </header>
