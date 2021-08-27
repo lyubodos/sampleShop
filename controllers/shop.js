@@ -23,7 +23,7 @@ getShop = (req, res, next) => {
                 prods: products,
                 path: "/",
                 hasProducts: products.length > 0,
-                isLoggedIn: req.isLoggedIn,
+                isLoggedIn: isLoggedIn,
                 activeProducts: true,
                 productCSS: true
             });
@@ -64,7 +64,6 @@ deleteProdCart = (req, res, next) => {
 
 //Cart controllers
 getCart = (req, res, next) => {
-
     req.user
         .populate('cart.items.productId')
         .execPopulate()
@@ -88,7 +87,6 @@ getCart = (req, res, next) => {
  
 
 postCart = (req, res, next) => {
-
     const prodId = req.body.productId;
 
     Product.findById(prodId)
@@ -119,7 +117,6 @@ getOrders = (req, res, next) => {
 };
 
 postOrder = (req, res, next) => {
-  
     req.user
     .populate('cart.items.productId')
     .execPopulate()
@@ -134,7 +131,7 @@ postOrder = (req, res, next) => {
             user: {
                 name: req.user.name,
                 userId: req.user
-            },
+            }
             
         });
 
