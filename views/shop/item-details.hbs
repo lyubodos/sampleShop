@@ -22,11 +22,11 @@
 
             <h2>Price: {{product.price}}$</h2>
             <p>{{product.description}}</p>
-            <div class="item__actions">   
-                   
-                          {{>add-to-cart}}
-                            
-                        </div>
+            <div class="item__actions">
+            {{#if isLoggedIn}}
+                {{>add-to-cart}}
+            {{/if}}
+            </div>
         </article>
     </div>
 </body>

@@ -6,6 +6,8 @@ const fs = require("fs");
 const express = require("express");
 const bodyParser = require("body-parser");
 const expressHbs = require("express-handlebars");
+const session = require("express-session");
+const mongoDBStore = require("connect-mongodb-session")(session);
 
 const envValues = require("./envVal");
 
@@ -24,15 +26,24 @@ const mongoose = require("mongoose");
 const User = require("./models/user");
 
 
+//Creating a ref for the database path which can be used more than once
+const MONGODB_URI = 'mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/shop';
+
+
 const app = express();
+
+const store = new mongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions',
+});
 
 
 //Calibrating view-engine's(Handlebars) extension type and directory path
 app.engine("hbs", expressHbs({
-    layoutsDir: 'views/layouts/',
-    defaultLayout: 'main-layout',
-    partialsDir: ['views/base', "views/shop"],
-    extname: "hbs"
+  layoutsDir: 'views/layouts/',
+  defaultLayout: 'main-layout',
+  partialsDir: ['views/base', "views/shop"],
+  extname: "hbs"
 }));
 
 
@@ -46,14 +57,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 
+//Creating a session aprehending the express-session with a middleware
+app.use(
+  session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  }));
+
+
 //Seting current user
-app.use((req, res, next) => {
-    User.findById("6124ff294543b7cf410d2e9d")
-        .then(user => {
-            req.user = user;
-            next();
-        })
-        .catch(err => console.log(err))
+app.use((req, res, next) => { 
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    .then(user => {
+      req.user = user;
+      console.log(user)
+      next();
+    })
+    .catch(err => console.log(err));
 });
 
 
@@ -65,25 +90,10 @@ app.use(errorController.error404);
 
 
 
-
 //Core server deployment (MongoDB)
-mongoose.connect('mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/shop?retryWrites=true&w=majority')
-    .then(result =>{
-        
-    User.findOne()
-    .then(user => {
-        if(!user){const user = new User({
-            name: "Lyubomir",
-            email: 'lyubomir.vas@test.cc',
-            cart: {
-                items: []
-            }
-        });
-
-        user.save();
-        }
-    });
-    app.listen(3000);
+mongoose.connect(MONGODB_URI)
+  .then(result => {
+    app.listen(envValues.port);
     console.log("Connected!");
 
 }).catch(err => console.log(err));

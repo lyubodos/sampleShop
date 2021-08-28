@@ -5,7 +5,7 @@ getHome = (req, res, next) => {
     res.render("shop/home", {
         pageTitle: "Home",
         path: "/",
-        isLoggedIn: req.isLoggedIn,
+        isAuth: req.session.isLoggedIn,
         activeHome: true,
         productCSS: true
     });
@@ -15,15 +15,17 @@ getHome = (req, res, next) => {
 //Shop controllers
 getShop = (req, res, next) => {
 
+    const isLoggedIn = req.session.isLoggedIn;
+
     Product.find()
     .lean()
         .then(products => {
             res.render("shop/shop", {
                 pageTitle: "Shop",
+                isAuth: isLoggedIn,
                 prods: products,
                 path: "/",
                 hasProducts: products.length > 0,
-                isLoggedIn: req.isLoggedIn,
                 activeProducts: true,
                 productCSS: true
             });
@@ -41,9 +43,8 @@ getDetails = (req, res, next) => {
             console.log(product);
             res.render("shop/item-details", {
                 product: product,
-                // pageTitle: product.title,
-                path: "/products",
-                isLoggedIn: req.isLoggedIn,
+                isLoggedIn: true,
+                path: "/products"
             });
         })
         .catch(err => console.log(err));
@@ -65,7 +66,6 @@ deleteProdCart = (req, res, next) => {
 
 //Cart controllers
 getCart = (req, res, next) => {
-
     req.user
         .populate('cart.items.productId')
         .execPopulate()
@@ -80,7 +80,7 @@ getCart = (req, res, next) => {
                 path: "/cart",
                 prods: products,
                 hasProducts: products.length > 0,
-                isLoggedIn: req.isLoggedIn,
+                isAuth: req.session.isLoggedIn,
                 activeCart: true,
                 productCSS: true,
             });
@@ -90,7 +90,6 @@ getCart = (req, res, next) => {
  
 
 postCart = (req, res, next) => {
-
     const prodId = req.body.productId;
 
     Product.findById(prodId)
@@ -114,6 +113,7 @@ getOrders = (req, res, next) => {
             path: '/orders',
             pageTitle: 'Your Orders',
             orders: orders,
+            isAuth: req.session.isLoggedIn,
             hasOrders: orders.length > 0,
             acriveOrders: true
           });
@@ -121,7 +121,6 @@ getOrders = (req, res, next) => {
 };
 
 postOrder = (req, res, next) => {
-  
     req.user
     .populate('cart.items.productId')
     .execPopulate()
@@ -132,12 +131,10 @@ postOrder = (req, res, next) => {
 
         const order = new Order({
             products: products,
-
             user: {
                 name: req.user.name,
                 userId: req.user
-            },
-            
+            }
         });
 
         return order.save();
@@ -151,7 +148,6 @@ postOrder = (req, res, next) => {
 
 module.exports = {
     getShop,
-    getAddProduct,
     getHome,
     getCart,
     getDetails,
