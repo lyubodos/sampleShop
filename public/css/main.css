@@ -205,6 +205,32 @@ form {
 }
 
 
+.btn-delete:hover{
+  background-color:red;
+}
+
+.btn-edit:hover{
+  background-color:green;
+}
+
+
+.user-message{ 
+  margin: 10px auto;
+  width: 30%;
+  color: ivory;
+  border: 1px solid rgb(115, 103, 228);
+  padding: 1rem;
+  border-radius: 3px;
+  background: rgb(115, 103, 228);
+  text-align: center;
+}
+
+.user-message--error {
+  border-color: red;
+  background: rgb(196, 97, 97);
+}
+
+
 @media (min-width: 768px) {
   .main-header__nav {
     display: flex;

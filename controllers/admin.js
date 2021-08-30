@@ -87,7 +87,6 @@ getEditProduct = (req, res, next) => {
             editing: editMode,
             formsCSS: true,
             productCSS: true,
-            isLoggedIn: req.isLoggedIn,
             product: product
         });
     });
@@ -111,7 +110,9 @@ postEditProduct = (req, res, next) => {
             product.description = updescription;
             product.price = upprice;
 
-            return product.save()
+            console.log(product)
+            
+            return product.save();
         })
         .then(result => {
             console.log(`UPDATED!!}`);

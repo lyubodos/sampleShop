@@ -43,7 +43,7 @@ getDetails = (req, res, next) => {
             console.log(product);
             res.render("shop/item-details", {
                 product: product,
-                isLoggedIn: true,
+                isAuth: req.session.isLoggedIn,
                 path: "/products"
             });
         })
@@ -132,7 +132,7 @@ postOrder = (req, res, next) => {
         const order = new Order({
             products: products,
             user: {
-                name: req.user.name,
+                email: req.user.email,
                 userId: req.user
             }
         });

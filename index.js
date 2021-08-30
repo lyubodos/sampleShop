@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const expressHbs = require("express-handlebars");
 const session = require("express-session");
 const mongoDBStore = require("connect-mongodb-session")(session);
+const flash = require("connect-flash");
 
 const envValues = require("./envVal");
 
@@ -27,10 +28,11 @@ const User = require("./models/user");
 
 
 //Creating a ref for the database path which can be used more than once
-const MONGODB_URI = 'mongodb+srv://Ithienne:Denica2400@cluster0.b6xr5.mongodb.net/shop';
+const MONGODB_URI = 'mongodb+srv://Ithienne:Trats12@cluster0.b6xr5.mongodb.net/shop';
 
 
 const app = express();
+
 
 const store = new mongoDBStore({
   uri: MONGODB_URI,
@@ -65,6 +67,9 @@ app.use(
     saveUninitialized: false,
     store: store
   }));
+
+
+app.use(flash());
 
 
 //Seting current user

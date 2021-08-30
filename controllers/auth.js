@@ -1,14 +1,25 @@
 const bcrypt = require("bcrypt");
 
-
 const User = require("../models/user");
 
 
+
+
 exports.getLogin = (req, res, next) => {
+
+  let message = req.flash('error');
+
+  if(message.length >0){
+    message = message[0]
+  } else {
+    message = null;
+  }
+
     res.render('auth/login', {
         pageTitle: "Login",
         path: "/login",
         isAuth: false,
+        errorMessage: message,
         activeLogin: true,
         authCSS: true,
         formsCSS: true
@@ -23,8 +34,9 @@ exports.postLogin = (req, res, next) => {
     User.findOne({email: email})
         .then(user => {
             if(!user){
-              return res.redirect("/login")
-            }
+              req.flash('error', 'Invalid email or password provided.');
+              return res.redirect("/login");
+            };
             
             bcrypt
             .compare(password, user.password)
@@ -32,6 +44,7 @@ exports.postLogin = (req, res, next) => {
               if(doMatch){
                 return res.redirect("/");
               }
+              req.flash('error', 'Invalid email or password provided.');
               return res.redirect('/login');
             })
             .catch(err => {
@@ -49,9 +62,19 @@ exports.postLogin = (req, res, next) => {
 
 
 exports.getSignUp = (req, res, next) => {
+
+  let message = req.flash('error');
+
+  if(message.length >0){
+    message = message[0]
+  } else {
+    message = null;
+  }
+
     res.render("auth/signup", {
         pageTitle: "Sign Up",
         path: "/signup",
+        errorMessage: message,
         isAuth: false,
         activeSignUp: true,
         authCSS: true,
@@ -65,11 +88,21 @@ exports.postSignUp = (req, res, next) => {
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
 
+
     User.findOne({ email: email })
       .then(userDoc => {
+
         if (userDoc) {
+          req.flash('error', 'User already exists!');
+          return res.redirect('/signup');
+        } else if (password !== confirmPassword){
+          req.flash('error', 'Passwords do not match! Please make sure that both passwords match.');
+          return res.redirect('/signup');
+        } else if (password === "" || confirmPassword === ""){
+          req.flash('error', 'Password fields cannot be empty!');
           return res.redirect('/signup');
         }
+
 
         return bcrypt.hash(password, 12)
         .then(hashedPass => {
