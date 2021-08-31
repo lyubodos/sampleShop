@@ -5,7 +5,7 @@ const ObjectId = mongodb.ObjectId;
 
 
 getAdminProducts =  (req, res, next) =>  {
-    Product.find()
+    Product.find({userId: req.user._id})
     .lean()
     .then(products => {
         res.render("admin/product-list", {
@@ -105,19 +105,22 @@ postEditProduct = (req, res, next) => {
         Product.findById(prodId)
         .lean()
         .then(product => {
+
+            if(product.userId.toString() !== req.user._id.toString()){
+                return res.redirect("/");
+            }
+
             product.title = uptitle;
             product.imageUrl = upimageUrl;
             product.description = updescription;
             product.price = upprice;
-
-            console.log(product)
-            
-            return product.save();
-        })
-        .then(result => {
-            console.log(`UPDATED!!}`);
-            res.redirect("/admin/products")
-        })
+            return product.save()
+            .then(result => {
+                console.log(`UPDATED!!}`);
+                res.redirect("/admin/products")
+            })
+        });
+      
 };
 
     
@@ -126,7 +129,7 @@ postEditProduct = (req, res, next) => {
 postDeleteProd = (req, res, next) => {
     const prodId = req.body.productId;
 
-    Product.findByIdAndRemove(prodId)
+    Product.deleteOne( {_id: prodId, userId: req.user._id} )
     .then(result =>{
         console.log(`Product deleted: ${result}`);
         res.redirect("/admin/products");
