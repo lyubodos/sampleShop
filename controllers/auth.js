@@ -38,7 +38,7 @@ exports.postLogin = (req, res, next) => {
         return res.redirect("/login");
       };
 
-      bcrypt
+      return bcrypt
         .compare(password, user.password)
         .then(doMatch => {
           if (doMatch) {

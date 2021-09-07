@@ -17,8 +17,7 @@ getAdminProducts =  (req, res, next) =>  {
             activeAdmProducts: true,
             productCSS: true
         });
-    })
-
+    });
 };
 
 
@@ -42,9 +41,7 @@ postProducts = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-  
-
-    
+      
     const product = new Product({
         title: title, 
         imageUrl: imageUrl, 
@@ -93,9 +90,10 @@ getEditProduct = (req, res, next) => {
 
 };
 
+
 postEditProduct = (req, res, next) => {
+    
         const prodId = req.body.productId;
-        
         const uptitle = req.body.title;
         const upimageUrl = req.body.imageUrl;
         const updescription = req.body.description;
@@ -104,27 +102,27 @@ postEditProduct = (req, res, next) => {
 
         Product.findById(prodId)
         .lean()
-        .then(product => {
+        .then(prod => {
 
-            if(product.userId.toString() !== req.user._id.toString()){
+            if(prod.userId.toString() !== req.user._id.toString()){
                 return res.redirect("/");
             }
+          
+            prod.title = uptitle;
+            prod.imageUrl = upimageUrl;
+            prod.description = updescription;
+            prod.price = upprice;
 
-            product.title = uptitle;
-            product.imageUrl = upimageUrl;
-            product.description = updescription;
-            product.price = upprice;
-            return product.save()
+            return prod.save()
             .then(result => {
-                console.log(`UPDATED!!}`);
-                res.redirect("/admin/products")
-            })
-        });
-      
+                console.log(result);
+                res.redirect("/products");
+            });
+
+        }).catch(err => console.log(err));
 };
 
     
-
 
 postDeleteProd = (req, res, next) => {
     const prodId = req.body.productId;

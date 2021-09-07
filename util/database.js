@@ -17,7 +17,7 @@ const mongoConnect = (cb) => {
         throw err;
     })
     
-}
+};
 
 const getDb = () => {
     if(_db){
@@ -25,7 +25,8 @@ const getDb = () => {
     }
     
     throw 'No Databata found!!!';
-}
+};
+
 
 module.exports = {
     mongoConnect,
