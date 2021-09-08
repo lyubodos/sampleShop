@@ -42,7 +42,11 @@ exports.postLogin = (req, res, next) => {
         .compare(password, user.password)
         .then(doMatch => {
           if (doMatch) {
-            return res.redirect("/");
+            req.session.isLoggedIn = true,
+            req.session.user = user;
+            console.log(req.session.user);
+            res.redirect("/");
+        
           }
           req.flash('error', 'Invalid email or password provided.');
           return res.redirect('/login');
@@ -51,10 +55,7 @@ exports.postLogin = (req, res, next) => {
           res.redirect('/login');
         })
 
-      req.session.isLoggedIn = true,
-        req.session.user = user;
-      console.log(req.session.user);
-      res.redirect("/");
+  
     })
 
     .catch(err => console.log(err))
@@ -96,6 +97,11 @@ exports.postSignUp = (req, res, next) => {
       pageTitle: "Sign Up",
       path: "/signup",
       errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword
+      },
       isAuth: false,
       activeSignUp: true,
       authCSS: true,
