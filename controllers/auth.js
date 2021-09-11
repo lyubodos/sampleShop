@@ -31,6 +31,25 @@ exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  const errors = validationResult(req);
+
+  if(!errors.isEmpty()){
+
+    return res.render('auth/login', {
+      pageTitle: "Login",
+      path: "/login",
+      isAuth: false,
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+       
+      },
+      activeLogin: true,
+      authCSS: true,
+      formsCSS: true
+    });
+  }
+
   User.findOne({ email: email })
     .then(user => {
       if (!user) {
@@ -76,7 +95,7 @@ exports.getSignUp = (req, res, next) => {
     pageTitle: "Sign Up",
     path: "/signup",
     errorMessage: message,
-    isAuth: false,
+    valErrors: [],
     activeSignUp: true,
     authCSS: true,
     formsCSS: true
@@ -89,9 +108,13 @@ exports.postSignUp = (req, res, next) => {
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
   const errors = validationResult(req);
+
+
   
   if(!errors.isEmpty()){
-    console.log( errors.array())
+
+    console.log(errors.array());
+
     return res.status(422)
     .render("auth/signup", {
       pageTitle: "Sign Up",
@@ -102,7 +125,7 @@ exports.postSignUp = (req, res, next) => {
         password: password,
         confirmPassword: confirmPassword
       },
-      isAuth: false,
+      valErrors: errors.array(),
       activeSignUp: true,
       authCSS: true,
       formsCSS: true

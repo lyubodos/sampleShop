@@ -12,6 +12,7 @@ router.post("/signup", [
 check('email')
 .isEmail()
 .withMessage("Please enter a valid email."),
+
 body('password').isLength( {min: 5} ).withMessage("Please enter a password with 5 or more characters.").isAlphanumeric() 
 ],
 
@@ -21,20 +22,20 @@ router.get("/login", authController.getLogin);
 router.post('/login', [
 body('email')
 .isEmail()
-.withMessage("Please enter a valid e-mail address!"),
+.withMessage("Please enter a valid e-mail address!")
+.normalizeEmail(),
 body('password')
 .isLength({min: 5})
 .withMessage("Password should be at least 5 characters long.")
 .isAlphanumeric()
+.trim()
 ],
 
 authController.postLogin);
 
 
 router.post("/logout", authController.postLogout);
-
 router.get("/reset", authController.getReset);
-
 
 module.exports = router;
 
